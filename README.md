@@ -9,7 +9,7 @@ This project uses Django 4.0.4 with bootstrap 5, requires python ^3.8 and chart.
 
 #### First, clone the project using git and create a virtual environment for the project:
 ```bash
-git clone https://github.com/gokhanmeteerturk/pobail.git
+git clone https://github.com/gokhanmeteerturk/Pobail.git
 cd Pobail
 python -m venv env
 ```
