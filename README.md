@@ -1,9 +1,11 @@
 
 # Community Management Platform For Local Businesses
+![PYTHON](https://img.shields.io/badge/python%20^3.8-purple?style=flat&logo=python&color=red&logoColor=white)
+![DJANGO](https://img.shields.io/badge/Django-^4.0.4-blue?style=flat&logo=django)
+![Version](https://img.shields.io/badge/Version-v0.1.03-yellow?style=flat) 
+![repo](https://img.shields.io/badge/Status-Active-success?style=flat)
+
 A community building and management system for businesses, NGOs etc. It supports multiple branches, leaders and special coupons / report assignments for community members.
-
-This project uses Django 4.0.4 with bootstrap 5, requires python ^3.8 and chart.js
-
 
 ## Setup (Local)
 
