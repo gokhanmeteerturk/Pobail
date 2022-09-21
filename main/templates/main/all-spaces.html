@@ -1,0 +1,65 @@
+{% extends 'index.html' %}
+{% block title %} Spaces | Pobail {% endblock title %}
+{% block profile %}
+{% if leader  %} {% url 'profile' leader.leader_id %}
+{% else %} {% url 'profile' member.member_id %}
+{% endif %}
+{% endblock %}
+{% block user %}
+{% if leader %} {{leader.name}}
+{% else %} {{member.name}}
+{% endif %}
+{% endblock user %}
+{% block spaces %}
+{% url 'mySpaces' %}
+{% endblock spaces %}
+{% block allSpaces %}
+{% url 'spaces' %}
+{% endblock %}
+{% block content %}
+<div class="container">
+   <!-- navigation links -->
+   <div class="container shadow-sm">
+      <nav style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='currentColor'/%3E%3C/svg%3E&#34;);" aria-label="breadcrumb">
+         <ol class="breadcrumb p-3">
+            <li class="breadcrumb-item active" aria-current="page">All spaces</li>
+         </ol>
+      </nav>
+   </div>
+   <!-- navigation links end -->
+   <div class="row gy-5">
+      {% if spaces %}
+      {% for space in spaces%}
+      <!-- individual card starts -->
+      <div class="col-sm-12 d-flex align-items-stretch justify-content-center ">
+         <div class="card shadow w-100">
+            <div class="class-header text-center text-dark border-bottom bg-warning rounded">
+               <h6 class="my-2"> Space: {{space.branch}}</h6>
+            </div>
+            <div class="card-body d-flex flex-column align-items-center">
+               <h5 class="card-title">{{space.branch}}-{{space.code}} : {{space.name}}</h5>
+               {% if space.leader %}
+               <p class="card-text">Space Leader : {{ space.leader.name}}</p>
+               {% else %}
+               <p> Leader not assigned</p>
+               {% endif %}
+               {% if not leader %}
+               {% comment %} if member {% endcomment %}
+               {% if space not in enrolled%}
+               <a href="{% url 'access' space.code %}" class="btn btn-outline-success"><span class="px-2">Access</span></a>
+               {% else %}
+               <a href="{% url 'space' space.code %}" class="btn btn-outline-success"><span
+                  class="px-3">Enter</span></a>
+               {% endif %}
+               {% endif %}
+            </div>
+         </div>
+      </div>
+      <!-- individual card ends -->
+      {% endfor %}
+   </div>
+   {% else %}
+   <div class="text-center h4 text-secondary">No spaces to show</div>
+   {% endif %}
+</div>
+{% endblock  %}

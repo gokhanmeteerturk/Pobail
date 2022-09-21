@@ -1,0 +1,58 @@
+{% extends 'index.html' %}
+{% block title %}Dashboard | Pobail {% endblock title %}
+{% block profile %}
+{% url 'profile' member.member_id %}
+{% endblock %}
+{% block user %}
+{{member.name}}
+{% endblock user %}
+{% block allSpaces %}
+{% url 'spaces' %}
+{% endblock%}
+{% block spaces %}
+{% url 'mySpaces' %}
+{% endblock %}
+{% block content %}
+<div>
+   <!--nav links-->
+   <div class="container">
+      <div class="container shadow-sm">
+         <nav style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='currentColor'/%3E%3C/svg%3E&#34;);" aria-label="breadcrumb">
+            <ol class="breadcrumb p-3">
+               <li class="breadcrumb-item active" aria-current="page">My spaces</li>
+            </ol>
+         </nav>
+      </div>
+      {% if spaces %}
+      <!-- Space container -->
+      <div class="card_primary d-flex justify-content-center flex-wrap">
+         {% for spaces in spaces %}
+         <!-- individual space starts -->
+         <div class="cd card text-center my-4 mx-4" style="width: 30rem !important;">
+            <div class="card-header text-light">
+               Branch: {{spaces.branch}}
+            </div>
+            <div class="card-body">
+               <h5 class="card-title"> {{spaces.branch}}-{{spaces.code}} : {{spaces.name}}</h5>
+               <a href="{% url 'space' spaces.code %}" class="btn btn-outline-success px-5">Enter</a>
+            </div>
+            <div class="card-footer text-light">
+               {% if spaces.leader %}
+               Space Leader : {{ spaces.leader.name}}
+               {% else %}
+               Leader not assigned
+               {% endif %}
+            </div>
+         </div>
+         <!-- individual space ends -->
+         {% endfor %}
+         <!-- Space container ends -->
+      </div>
+      {% else %}
+      <div class="text-center fs-5 text-secondary">
+         <p>You are not joined to any spaces</p>
+      </div>
+      {% endif %}
+   </div>
+</div>
+{% endblock %}

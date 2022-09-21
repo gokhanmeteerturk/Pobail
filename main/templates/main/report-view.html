@@ -1,0 +1,141 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block title %} {{ report.title }} - Pobail {% endblock title %}
+{% block profile %}
+{% url 'profile' leader.leader_id %}
+{% endblock %}
+{% block user %}
+{{leader.name}}
+{% endblock user %}
+{% block allSpaces %}
+{% url 'spaces' %}
+{% endblock %}
+{% block spaces %}
+{% url 'leaderSpaces' %}
+{% endblock spaces %}
+{% block content %}
+<!-- navigation links -->
+<div class="container shadow-sm">
+   <nav style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='currentColor'/%3E%3C/svg%3E&#34;);" aria-label="breadcrumb">
+      <ol class="breadcrumb p-3">
+         <li class="breadcrumb-item"><a style="color: rgb(59, 31, 18)" href="{% url 'leaderSpaces' %}">My
+            Spaces</a>
+         </li>
+         <li class="breadcrumb-item"><a style="color: rgb(59, 31, 18)"
+            href="{% url 'leader' space.code %}">{{ space.name }}</a></li>
+         <li class="breadcrumb-item active" aria-current="page">Report <span>
+            ({{ report.title }})</span> 
+         </li>
+      </ol>
+   </nav>
+</div>
+<!-- navigation links end -->
+<div class="container">
+   <div class="shadow rounded p-3 report-info">
+      <p class="px-2 fs-5">{{report.title}}</p>
+      <div class="p-2 text-break">{{report.description}}</div>
+      <h6 class="p-2">Deadline: <span class="px-2" style="color:red"> {{report.due_date}} </span></h6>
+      {% if report.file %}
+      <label class="p-2" for="">Attachment: &nbsp <a
+         class="px-2 py-1 text-success bg-success bg-opacity-10 border border-success border-opacity-10 rounded-2"
+         style="text-decoration: none; font-size: smaller !important" href="{{report.file.url}}"> &nbsp View
+      </a> &nbsp or &nbsp <a
+         class="fs-6 px-2 py-1 text-primary bg-primary bg-opacity-10 border border-priamry border-opacity-10 rounded-2"
+         style="text-decoration: none; font-size: smaller !important" download href=" {{report.file.url}}">
+      Download</a></label><br>
+      {% endif %}
+      <label class="p-2" for="">
+      Submitted : {{report.submission_set.count}}/{{totalMembers}}
+      </label><br>
+      <label class="p-2" for="">Time Remaining : <span class="fw-semibold" id="timeRemain"></span></label>
+   </div>
+   <h6 class="text-muted fst-italic mt-3">Showing all submissions:</h6>
+</div>
+<!--Member grading table-->
+<div class="container report-info">
+   <div class="table-responsive">
+      <table class="table shadow rounded" style="white-space: nowrap;">
+         <thead class="table-dark">
+            <tr>
+               <th class="text-center" scope="col" colspan="2">Member</th>
+               <th class="text-center" scope="col">Member ID</th>
+               <th class="text-center" scope="col">Submitted file</th>
+               <th class="text-center" scope="col">Submitted on</th>
+               <th class="text-center" scope="col" style="min-width: 150px;">Grade</th>
+            </tr>
+         </thead>
+         <tbody>
+            {% if not submissions %}
+            <td class="text-center text-muted fst-italic" colspan="6">No one has submitted yet</th>
+               {% else %}
+               {% for submission in submissions %}
+            <tr>
+               <td class="text-center"><img class="rounded-circle" src="/media/{{ submission.member.photo}}" alt="image"
+                  style="height: 2.5rem;"></td>
+               <td>{{submission.member.name}}</td>
+               <td class="text-center"><span>{{ submission.member_id }}</span></td>
+               <td class="text-center"><a
+                  class="px-2 py-1 text-primary bg-primary bg-opacity-10 border border-priamry border-opacity-10 rounded-2"
+                  style="text-decoration: none; font-size: smaller !important" download
+                  href="{{submission.file.url}}">Download</a></td>
+               <td class="text-center">{{submission.submission_date}}</td>
+               {% if submission %}
+               <td class="text-center" style="min-width: 150px;">
+                  <form action="{% url 'gradeSubmission' space.code report.id submission.id %}"
+                     method="post">
+                     {% csrf_token %}
+                     <div class="d-flex justify-content-center">
+                        <div class="form-group">
+                           <input class="form-control text-center" type="number" placeholder="Marks" name="marks" id="marks"
+                              max="{{ report.marks}}" step=".1" min="0" value="{{submission.marks}}" required>
+                        </div>
+                        <button
+                           type="submit" class="btn btn-sm ms-2 rounded-2"><img
+                           src="{% static 'images/icon/check.png' %}" alt="set" style="height:1rem"></button>
+                     </div>
+               </td>
+               {% else %}
+               <td class="text-center" style="min-width: 150px;">
+               <form action="{% url 'gradeSubmission' space.code report.id submission.id %}"
+                  method="post">
+               {% csrf_token %}
+               <div class="d-flex justify-content-center">
+               <div class="form-group">
+               <input class="form-control text-center" type="number" placeholder="Marks" name="marks" id="marks"
+                  max="{{ report.marks}}" step=".1" min="0" required value="{{submission.marks}}"></div><button type="submit"
+                  class="btn btn-outline-success btn-sm ms-2"><img
+                  src="{% static 'images/icon/check.png' %}" alt="set" style="height:1rem"></button>
+               </div>
+               </td>
+               {% endif %}
+               </form>
+            </tr>
+            {% endfor %}
+            {% endif %}
+         </tbody>
+      </table>
+   </div>
+</div>
+<script>
+
+   
+   var time = new Date('{{ report.deadline|date:"D, d M Y H:i:s"}}').getTime();
+   var rand = setInterval(function () {
+       var now = new Date().getTime();
+       var difference = time - now;
+       var days = Math.floor(difference / (1000 * 60 * 60 * 24));
+       var hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+       var minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+       var seconds = Math.floor((difference % (1000 * 60)) / 1000);
+   
+       document.getElementById("timeRemain").innerHTML = days + " days " + hours + " hours " +
+           minutes + " minutes " + seconds + " seconds ";
+   
+       if (difference < 0) {
+           clearInterval(rand);
+           document.getElementById("timeRemain").innerHTML = "Closed!";
+           document.getElementById("timeRemain").style.color = "red";
+       }
+   }, 1000);
+</script>
+{% endblock %}

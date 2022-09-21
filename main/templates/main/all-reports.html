@@ -1,0 +1,75 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block title %} Reports | {{ space.name }} | Pobail {% endblock title %}
+{% block profile %}
+{% url 'profile' leader.leader_id %}
+{% endblock %}
+{% block user %}
+{{leader.name}}
+{% endblock user %}
+{% block spaces %}
+{% url 'leaderSpaces' %}
+{% endblock spaces %}
+{% block allSpaces %}
+{% url 'spaces' %}
+{% endblock %}
+{% block content %}
+<div>
+   <!-- navigation links -->
+   <div class="container shadow-sm">
+      <nav style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='currentColor'/%3E%3C/svg%3E&#34;);" aria-label="breadcrumb">
+         <ol class="breadcrumb p-3">
+            <li class="breadcrumb-item"><a style="color: rgb(59, 31, 18)"
+               href="{% url 'leaderSpaces' %}">My
+               Spaces</a>
+            </li>
+            <li class="breadcrumb-item"><a style="color: rgb(59, 31, 18)"
+               href="{% url 'leader' space.code %}">{{ space.name }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Report</li>
+         </ol>
+      </nav>
+   </div>
+   <!-- navigation links end -->
+   <div class="container d-flex flex-wrap flex-column">
+      <!-- space name starts -->
+      <div class="space-section p-3 m-3 shadow-sm d-flex justify-content-center">
+         <div class="fs-5 space_name">{{space.branch}}-{{space.code}} : {{space.name}}</div>
+      </div>
+      <!-- space name ends -->
+      <!-- report section starts -->
+      <div class="space-section p-3 m-3 shadow">
+         <div class="d-flex flex-row justify-content-between edit">
+            <h4 style="color: rgb(59, 31, 18);"><img src="{% static 'images/icon/open-book.png' %}"
+               alt="" style="height:1.5rem"><span style="margin-right: 0.6rem;"></span>Report</h4>
+            <a style="height:2rem"
+               href="{% url 'addReport' space.code %}">
+            <img src="{% static 'images/icon/iconBlack.png' %}"
+               alt="" height="32">
+            </a>
+         </div>
+         <div class="add-announcement">
+            {% for report in reports %}
+            <!-- individual report starts --> 
+            <a class="text-bold fs-5" href="{% url 'submission' space.code report.id %}">
+            {{report.title}}</a>
+            <div class="d-flex justify-content-between align-items-center">
+               <p style="margin-bottom:0;" class="text-muted">Submitted : {{ report.submission_set.count}} / {{ memberCount }} </p>
+               <p class="fs-6 text-muted" style="margin-bottom:0;">
+                  {{report.datetime}}
+               </p>
+            </div>
+            <p style="margin-bottom:0;">Submission ends : {{ report.deadline }}</p>
+            <hr>
+            <!-- individual report ends -->
+            {% empty %}
+            <h6 style="text-align:center">No reports given yet</h6>
+            {% endfor %}
+         </div>
+         <div class="text-center fs-6">
+            <p>Showing {{ reports.count}} of {{space.report_set.count}} {% if reports.count == 1 %}report {% else %}reports{% endif %}</p>
+         </div>
+      </div>
+      <!-- report section ends -->
+   </div>
+</div>
+{% endblock %}

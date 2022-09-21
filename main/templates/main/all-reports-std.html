@@ -1,0 +1,65 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block title %}Reports | {{ space.name }} | Pobail {% endblock title %}
+{% block profile %}
+{% url 'profile' member.member_id %}
+{% endblock %}
+{% block user %}
+{{member.name}}
+{% endblock user %}
+{% block spaces %}
+{% url 'mySpaces' %}
+{% endblock spaces %}
+{% block allSpaces %}
+{% url 'spaces' %}
+{% endblock allSpaces %}
+{% block content %}
+<div>
+   <!-- navigation links -->
+   <div class="container shadow-sm">
+      <nav style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='currentColor'/%3E%3C/svg%3E&#34;);" aria-label="breadcrumb">
+         <ol class="breadcrumb p-3">
+            <li class="breadcrumb-item"><a style="color: rgb(59, 31, 18)" href="{% url 'mySpaces' %}">My
+               Spaces</a>
+            </li>
+            <li class="breadcrumb-item"><a style="color: rgb(59, 31, 18)"
+               href="{% url 'space' space.code %}">{{ space.name }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Report</li>
+         </ol>
+      </nav>
+   </div>
+   <!-- navigation links end -->
+   <div class="container d-flex flex-wrap flex-column">
+      <!-- space name starts -->
+      <div class="space-section p-3 m-3 shadow-sm d-flex justify-content-center">
+         <div class="fs-5 space_name">{{space.branch}}-{{space.code}} : {{space.name}}</div>
+      </div>
+      <!-- space name ends -->
+      <!-- report section starts -->
+      <div class="space-section p-3 m-3 shadow">
+         <h4 style="color: rgb(59, 31, 18);"><img src="{% static 'images/icon/open-book.png' %}"
+            alt="" style="height:1.5rem"><span style="margin-right: 0.6rem;"></span>Report</h4>
+         <div>
+            {% for report in reports %}
+            <!-- individual report starts -->
+            <a class="fs-6"
+               href="{% url 'reportPage' space.code report.id %}">{{report.title}}</a>
+            <div class="fs-6 text-muted border-bottom d-flex justify-content-between">
+               <div>
+                  {{report.post_date}}
+               </div>
+               <p> Due Date : {{ report.due_date}} </p>
+            </div>
+            <!-- individual report ends -->
+            {% empty %}
+            <h6 style="text-align:center">No reports given yet</h6>
+            {% endfor %}
+         </div>
+         <div class="text-center fs-6 mt-3">
+            <p>Showing {{ reports.count}} of {{space.report_set.count}} {% if reports.count == 1 %}report {% else %}reports{% endif %}</p>
+         </div>
+      </div>
+      <!-- report section ends -->
+   </div>
+</div>
+{% endblock %}
