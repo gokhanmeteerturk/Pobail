@@ -16,7 +16,7 @@ python -m venv env
  
 #### Then you should activate the environment:
 
-    For Windoæws:
+    For Windows:
 ```bash
 .\env\Scripts\activate
 ```
