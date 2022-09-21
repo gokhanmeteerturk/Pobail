@@ -1,0 +1,98 @@
+{% extends 'index.html' %}
+{% block title %}Quizzes | {{ space.name }} {% endblock title %}
+{% block profile %}
+{% url 'profile' leader.leader_id %}
+{% endblock %}
+{% block user %}
+{{leader.name}}
+{% endblock user %}
+{% block spaces %}
+{% url 'leaderSpaces' %}
+{% endblock spaces %}
+{% block allSpaces %}
+{% url 'spaces' %}
+{% endblock %} 
+{% block content %}
+{% comment %} alert {% endcomment %}
+{% if messages %}
+{% for message in messages %}
+<div class="alert alert-{% if 'success' in message.tags %}success{% else %}danger{% endif %} alert-dismissible fade show" role="alert">
+   <span> {{ message }}</span>
+   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{% endfor %}
+{% endif %}
+{% comment %} alert ends {% endcomment %}
+<!-- navigation links -->
+<div class="container shadow-sm">
+   <nav style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='currentColor'/%3E%3C/svg%3E&#34;);" aria-label="breadcrumb">
+      <ol class="breadcrumb p-3">
+         <li class="breadcrumb-item"><a style="color: rgb(59, 31, 18)" href="{% url 'leaderSpaces' %}">My
+            Spaces</a>
+         </li>
+         <li class="breadcrumb-item"><a style="color: rgb(59, 31, 18)"
+            href="{% url 'leader' space.code %}">{{ space.name }}</a></li>
+         <li class="breadcrumb-item active" aria-current="page">Quizzes</li>
+      </ol>
+   </nav>
+</div>
+<!-- navigation links end -->
+<div class="container rounded border">
+   <div class="py-1 m-2 rounded d-flex justify-content-between flex-wrap">
+      <span></span>
+      <h5 class="text-center">Quizzes -  {{ space.name}}</h5>
+      <div>
+         <a class="btn btn-sm btn-success px-3" href="{% url 'quiz' space.code %}">New</a>
+      </div>
+   </div>
+</div>
+<div class="container rounded">
+   {% if quizzes %}
+   <div class="table-responsive">
+      <table class="table my-3 text-center" style="white-space: nowrap;">
+         <thead class="table-dark">
+            <tr>
+               <th scope="col">SL</th>
+               <th scope="col">Quiz</th>
+               <th scope="col">Starts</th>
+               <th scope="col">Ends</th>
+               <th scope="col">Questions</th>
+               <th scope="col">Action</th>
+            </tr>
+         </thead>
+         <tbody class="table-group-divider">
+            {% for quiz in quizzes %}
+            <tr>
+               <th scope="row">{{ forloop.counter }}</th>
+               <td>
+                  <a {% if quiz.started %} style="color:#004481" {% endif %} href="{% url 'quizSummary' space.code quiz.id %}">{{ quiz.title}}</a>
+               </td>
+               <td>{{ quiz.starts}} </td>
+               <td>{{ quiz.ends}}</td>
+               <td>{{ quiz.total_questions}}</td>
+               <td>
+                  {% if quiz.started == 0 %}
+                  <a class="btn btn-sm btn-primary" href="{% url 'addQuestion' space.code quiz.id %}">Add question</a>
+                  {% else %}
+                  <button disabled class="btn btn-sm btn-primary">Add question</button>
+                  {% endif %}
+               </td>
+            </tr>
+            {% endfor %}
+         </tbody>
+      </table>
+   </div>
+   {% else %}
+   <div >
+      <p class="text-center pb-3">No quizzes found</p>
+   </div>
+   {% endif %}
+</div>
+<script>
+   $(document).ready(function(){
+     setTimeout(function(){
+       $(".alert").alert('close');
+     },4000);
+   });
+</script>
+{% endblock %}

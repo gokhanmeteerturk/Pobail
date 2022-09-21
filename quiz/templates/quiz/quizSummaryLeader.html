@@ -1,0 +1,251 @@
+{% extends 'index.html' %}
+{% block title %}{{quiz.title}} | {{ space.name }} {% endblock title %}
+{% block profile %}
+{% url 'profile' leader.leader_id %}
+{% endblock %}
+{% block user %}
+{{leader.name}}
+{% endblock user %}
+{% block spaces %}
+{% url 'leaderSpaces' %}
+{% endblock spaces %}
+{% block allSpaces %}
+{% url 'spaces' %}
+{% endblock %}
+{% block content %}
+<!-- navigation links -->
+<div class=" container shadow-sm">
+   <nav style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='currentColor'/%3E%3C/svg%3E&#34;);" aria-label="breadcrumb">
+      <ol class="breadcrumb p-3">
+         <li class="breadcrumb-item"><a style="color: rgb(59, 31, 18)" href="{% url 'leaderSpaces' %}">My
+            Spaces</a>
+         </li>
+         <li class="breadcrumb-item"><a style="color: rgb(59, 31, 18)"
+            href="{% url 'leader' space.code %}">{{ space.name }}</a></li>
+         <li class="breadcrumb-item"><a style="color: rgb(59, 31, 18)"
+            href="{% url 'allQuizzes' space.code %}">Quizzes</a></li>
+         <li class="breadcrumb-item active" aria-current="page">
+            {{quiz.title}}
+         </li>
+      </ol>
+   </nav>
+</div>
+<!-- navigation links end -->
+<div class="container shadow-sm rounded border p-3 liner-gradient-sky text-light ">
+   {% if quiz.start < time %}
+   <div class="row">
+      <div class="col-6">
+         <div class="fs-5"> {{quiz.title}} - Summary</div>
+         <div>
+            <p class="text-break word-break opacity-75"> {{quiz.description}} </p>
+         </div>
+         <div>
+            <p><span class="coupon-symbols-outlined inline-icons me-2">
+               groups
+               </span>Member Participated : <span>{{ quiz.attempted_members}}/{{total_members}}</span>
+            </p>
+            <p><span class="coupon-symbols-outlined inline-icons me-2">
+               format_list_numbered
+               </span>Total Questions :<span> {{ quiz.total_questions}}</span> 
+            </p>
+         </div>
+      </div>
+      <div class="col-6 my-4 border-start">
+         <p><span class="coupon-symbols-outlined inline-icons me-2">
+            av_timer
+            </span>Start : <span> {{quiz.starts}} </span> 
+         </p>
+         <p><span class="coupon-symbols-outlined inline-icons me-2">
+            timer_off
+            </span>End : <span> {{ quiz.ends }} </span>
+         </p>
+         {% if quiz.total_marks %}
+         <p><span class="coupon-symbols-outlined inline-icons me-2">
+            military_tech
+            </span>Total Marks :<span> {{ quiz.total_marks }}</span>
+         </p>
+         {% endif %}
+         <p><span class="coupon-symbols-outlined inline-icons me-2">
+            timelapse
+            </span>Quiz Duration : <span> {{ quiz.duration }}</span>
+         </p>
+      </div>
+   </div>
+</div>
+{% if quiz.publish_status %}
+<p class="text-success d-flex justify-content-center my-3">
+   Marks Published!
+</p>
+{% else %}
+<div class="d-flex justify-content-center my-3">
+   <form method="post" action=" {% url 'quizSummary' space.code quiz.id %} ">{% csrf_token %}
+      <button class="btn btn-sm btn-primary" type="submit"> <span class="px-1">Publish marks</span> </button>
+   </form>
+</div>
+{% endif %}
+<div class="d-flex justify-content-center my-3">
+   <button id="showMarks"  class="btn btn-sm btn-success mb-1 px-3">Show marks</button>
+</div>
+<div class="container p-3 shadow-sm rounded" id="allmarks">
+   <div>Marks of members</div>
+   {% if quiz.attempted_members %}
+<div class="table-responsive">
+   <table class="table text-center table-borderless" style="white-space: nowrap;">
+      <thead class="border-bottom">
+         <tr>
+            <th scope="col">SL</th>
+            <th scope="col" colspan="2">Member</th>
+            <th scope="col">ID</th>
+            <th scope="col">Marks</th>
+            <th scope="col">Submitted on</th>
+         </tr>
+      </thead>
+      <tbody>
+         {% for member in members %}
+         <tr>
+            <td>{{forloop.counter}}</td>
+            <td class="text-end"><img class="rounded-circle" src="/media/{{member.photo}}" alt="image"
+               style="height: 2.5rem;"></td>
+            <td class="text-start">{{member.name}}</td>
+            <td>{{member.member_id}}</td>
+            {% if member.attempted %}
+            <td>{{member.total_marks_obtained}} / {{quiz.total_marks}}</td>
+            <td>{{member.submission_time}}</td>
+            {% else %}
+            <td>Did not attempt</td>
+            <td>Did not attempt</td>
+            {% endif %}
+         </tr>
+         {% endfor %}
+      </tbody>
+   </table>
+</div>
+   {% else %}
+   <div class="text-center">No members have attempted this quiz yet</div>
+   {% endif %}
+</div>
+<div class="container">
+ <span class="text-muted fst-italic" style="font-size:smaller">Click on question to show the details</span> 
+   {% for question in questions %}
+   <div class="d-grid gap-2 mt-2">
+      <button class="bt btn-sm liner-gradient-margo mb-2 border rounded py-3" type="button" data-bs-toggle="collapse" data-bs-target="#question{{question.id}}" aria-expanded="false" aria-controls="collapseExample">
+      <span>{{forloop.counter}}. {{question.question}}</span> 
+      </button>
+   </div>
+   <div class="collapse" id="question{{question.id}}">
+      <div class="row p-3 mb-3 mx-2 rounded border shadow-sm">
+         <div class="col-lg-6 col-md-6 col-sm-12 border-end">
+            <p>A : {{question.option1}}</p>
+            <p>B : {{question.option2}}</p>
+            <p>C : {{question.option3}}</p>
+            <p>D : {{question.option4}}</p>
+            <div class="row">
+               <div class="col-6">
+                  <p style="font-size: 15px;" class="margin-p-bottom">Answer : <span>{{question.answer}}</span></p>
+               </div>
+               <div class="col-6">
+                  <p style="font-size: 15px;" class="margin-p-bottom">Marks : <span>{{question.marks}}</span></p>
+               </div>
+            </div>
+            <div class="row">
+               <div class="col-6">
+                  <p style="font-size: 15px;" class="margin-p-bottom"><span class="bg-success rounded-circle px-1 text-center" style="color:white">{{ question.total_correct_answers }}</span> Correct answers</p>
+               </div>
+               <div class="col-6">
+                  <p style="font-size: 15px;" class="margin-p-bottom"><span class="bg-danger rounded-circle px-1 text-center" style="color:white">{{ question.total_wrong_answers }}</span> Wrong answers</p>
+               </div>
+            </div>
+            {% if question.explanation %}
+            <div class="mt-3 bg-info bg-opacity-25 py-2 border-start border-3 border-info rounded" style="font-size:smaller">
+               <span class="px-2">Explanation : </span>{{question.explanation}}
+            </div>
+            {% endif %}
+         </div>
+         <div class="col-lg-6 col-md-6 col-sm-12">
+            <div class="chart">
+               <canvas id="canvas{{question.id}}"></canvas>
+            </div>
+         </div>
+      </div>
+   </div>
+   {% endfor %}
+</div>
+{% else %}
+<div class="text-center">
+   Quiz not started yet
+</div>
+{% endif %}
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+   var color = [
+   '#FFCD56',
+   '#36A2EB',
+   '#FF4069',
+   '#2CDEDB',
+   ]
+   {% for question in questions %}
+    var data{{question.id}} = {
+        labels: [
+        'A',
+        'B',
+        'C',
+        'D'
+        ],
+        datasets: [{
+            data: [{{question.A}}, {{question.B}}, {{question.C}}, {{question.D}}],
+            backgroundColor: color,
+            borderColor: color,
+            borderWidth: 1,
+            hoverBorderColor: 'deepskyblue',
+            hoverBorderWidth: 1,
+            hoverBorderRadius: 5,
+            hoverBorderDash: [5, 5],
+            hoverBorderDashOffset: 0.0,
+        }]
+    };
+    {% endfor %}
+    {% for question in questions %}
+    var ctx{{question.id}} = document.getElementById('canvas{{question.id}}').getContext('2d');
+    var myChart{{question.id}} = new Chart(ctx{{question.id}}, {
+        type: 'doughnut',
+        data: data{{question.id}},
+        options: {
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Responeses',
+                }
+            }, 
+            animation : true,
+            animationSteps : 60,
+            animationEasing : 'easeOutBounce',
+            maintainAspectRatio: false,
+            legend: {
+                display: true,
+                position: 'bottom',
+                labels: {
+                    fontColor: 'rgb(255, 99, 132)'
+                }
+            },       
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        startAtZero: true  
+                    }
+                }]
+            }
+        }
+    });
+    {% endfor %}
+
+   $('#allmarks').hide();
+   $('#showMarks').click(function () {
+      $(this).text(function (i, text) {
+         return text === "Hide marks" ?  "Show marks" : "Hide marks";
+      });
+      $('#allmarks').toggle('slow');
+   });
+
+</script>
+{% endblock %}
