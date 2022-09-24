@@ -8,6 +8,9 @@
 A community building and management system for businesses, NGOs etc. It supports multiple branches, leaders and special coupons / report assignments for community members.
 
 ## Setup (Local)
+(based on the setup you have, you might need to use python3 and/or pip3 commands instead of python and pip commands below.)
+
+
 
 #### First, clone the project using git and create a virtual environment for the project:
 ```bash
