@@ -45,7 +45,7 @@ python manage.py runserver
 ```
 Note: From admin panel, you will need to add a leader and a member named 'Guest Leader' and 'Guest Member' for the guest system to work.
 
-## Features
+## Main Features
 
 Login as admin, and you can create branches, create spaces, add new leaders, new members and assigns them spaces.
 
