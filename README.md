@@ -64,5 +64,7 @@ Members with this access key will be able to join called space.
 ### License
 Read LICENSE file for the details of the MIT LICENSE I am using.
 
-
-
+### To do
+- _Support for announcements_
+- Production level security and production configs
+- Removal of inline css
