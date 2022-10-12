@@ -28,7 +28,7 @@ python -m venv env
 
     For Linux:
 ```bash
-source env/bin/active
+source env/bin/activate
 ```
  
 #### Finally, install dependencies and follow regular django setup steps like this:
