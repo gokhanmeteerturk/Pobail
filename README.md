@@ -18,7 +18,9 @@ git clone https://github.com/gokhanmeteerturk/Pobail.git
 cd Pobail
 python -m venv env
 ```
- 
+You should change setting.py and add your SECRET_KEY. (Using environment variables is recommended).
+
+
 #### Then you should activate the environment:
 
     For Windows:
