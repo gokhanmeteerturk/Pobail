@@ -80,7 +80,7 @@ class Question(models.Model):
     def total_wrong_answers(self):
         return MemberAnswer.objects.filter(question=self).exclude(answer=self.answer).count()
 
-
+# TODO: make MemberAnswer model 'less thin'
 class MemberAnswer(models.Model):
     member = models.ForeignKey(Member, on_delete=models.CASCADE)
     quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)
