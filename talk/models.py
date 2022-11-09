@@ -26,8 +26,8 @@ class MemberTalk(models.Model):
     class Meta:
         ordering = ['-sent_at']
 
-    def __str__(self):
-        return self.content[:30]
-
     def time(self):
         return self.sent_at.strftime("%d-%b-%y, %I:%M %p")
+
+    def __str__(self):
+        return self.content[:30]
