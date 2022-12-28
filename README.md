@@ -19,6 +19,7 @@ cd Pobail
 python -m venv env
 ```
 (or `python3 -m venv env` instead of the last line , depending on your setup)
+
 You should change settings.py and add your SECRET_KEY. (Using environment variables is recommended).
 
 
